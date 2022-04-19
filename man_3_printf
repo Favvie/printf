@@ -1,0 +1,55 @@
+
+
+./" Manpage for _printf
+./"
+.TH _printf 3 "19 April 2022" "1.0" "_printf man page"
+.SH NAME
+.B _printf \- formatted output conversion
+.SH SYNOPSIS
+#include "main.h"
+
+int _printf(const char *
+.I format
+.B , ...)
+.SH DESCRIPTION
+_printf is a function that prints to the standard output under the control of a
+.I format
+string that specifies how subsequent arguments are converted for output.
+.SH RETURN VALUE
+On successful return, these functions return the number of characters printed, excluding the null byte used to end output to strings.
+
+If an output error is encountered, a negative value is returned.
+.SH Conversion Specifiers
+A character that specifies the type of conversion to be applied. The conversion specifiers and their meanings are:
+.TP
+.BR c
+The int argument is converted to an unsigned char, then the resulting character is written
+.TP
+.B s
+The const char * argument is expected to be a pointer to an array of character type (pointer to a string). Characters from the array are written up to a terminating null byte, but do not include the terminating null byte.
+.TP
+.B d, i
+The int argument is converted to signed decimal notation.
+.TP
+.B x, X
+The unsigned int argument is converted to unsigned lowercase hexadecimal notation(x), or unsigned uppercase hexadecimal notation(X).
+.TP
+.B u
+The unsigned int argument is converted to unsigned decimal notation
+.TP
+.B o, b
+The unsigned int argument is converted to unsigned octal notation(o) or binary notation(b).
+.TP
+.B p
+Address is printed in hexadecimal.
+
+.SH EXAMPLE
+To print the day of the year, where weekday and month are pointers to strings and day and year are integers:
+
+#include "main.h"
+
+_printf("%s, %s %d, %d\\n", weekday, month, day, year);
+.SH BUGS
+No known bugs
+.SH AUTHOR
+Favour Abangwu and John Eze
