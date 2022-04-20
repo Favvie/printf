@@ -1,172 +1,81 @@
 #include "main.h"
+
 /**
- * t_char - print a character
- *@va:character
+ * check_for_specifiers - checks if there is a valid format specifier
+ * @format: possible format specifier
  *
- * Return: no return
+ * Return: pointer to valid function or NULL
  */
-int t_char(va_list va)
+static int (*check_for_specifiers(const char *format))(va_list)
 {
-	int c;
+	unsigned int i;
+	print_t p[] = {
+		{"c", print_c},
+		{"s", print_s},
+		{"i", print_i},
+		{"d", print_d},
+		{"u", print_u},
+		{"b", print_b},
+		{"o", print_o},
+		{"x", print_x},
+		{"X", print_X},
+		{"p", print_p},
+		{"S", print_S},
+		{"r", print_r},
+		{"R", print_R},
+		{NULL, NULL}
+	};
 
-	c = va_arg(va, int);
-	_putchar(c);
-	return (1);
+	for (i = 0; p[i].t != NULL; i++)
+	{
+		if (*(p[i].t) == *format)
+		{
+			break;
+		}
+	}
+	return (p[i].f);
 }
+
 /**
- * t_string - print a string
- *@va: pointer to string
+ * _printf - prints anything
+ * @format: list of argument types passed to the function
  *
- * Return: no return
- */
-int t_string(va_list va)
-{
-	int i, j;
-	char n[] = "(null)";
-	char *s = va_arg(va, char *);
-
-	if (s == NULL)
-	{
-		for (i = 0; n[i] != '\0'; i++)
-			_putchar(n[i]);
-		return (6);
-	}
-	for (j = 0; s[j] != '\0'; j++)
-		_putchar(s[j]);
-	return (j);
-}
-
-/**
- * print_number - Entry point
- *@va: the integer to print
- * Return: no return
- */
-int print_number(va_list va)
-{
-	int i, len, r, l;
-	unsigned int abs, num, numt;
-	int n = va_arg(va, int);
-
-	len = 0;
-	i = 0;
-	r = 1;
-	l = 1;
-	if (n < 0)
-	{
-		_putchar('-');
-		len++;
-		abs = -n;
-	}
-	else
-	{
-		abs = n;
-	}
-
-	num = abs;
-	while (num > 0)
-	{
-		num /= 10;
-		i++;
-	}
-
-	while (r < i)
-	{
-		l *= 10;
-		r++;
-	}
-	while (l >= 1)
-	{
-		numt = (abs / l) % 10;
-		_putchar(numt + '0');
-		len++;
-		l /= 10;
-	}
-	return (len);
-}
-
-/**
- * binary - Entry point
- *@va: the binary to print
- * Return: no return
- */
-int binary(va_list va)
-{
-    unsigned int c;
-	int  i, j;
-	int arr[100];
-
-	c = va_arg(va, int);
-	i = 0;
-	if (c == 0)
-	{
-		_putchar('0');
-		return (1);
-	}
-	while (c > 0)
-	{
-		arr[i] = c % 2;
-		c = c / 2;
-		i++;
-	}
-	for (j = i - 1; j >= 0; j--)
-		_putchar(arr[j] + '0');
-	return (i);
-}
-
-
-/**
- * _printf - print output according to a format
- *@format: first argument
- *
- * Return: the number of characters printed(excluding the null byte)
+ * Return: number of characters printed
  */
 int _printf(const char *format, ...)
 {
-	int i = 0, j, len = 0, count;
+	unsigned int i = 0, count = 0;
 	va_list valist;
-	types difftypes[] = {
-		{'c', t_char},
-		{'s', t_string},
-		{'d', print_number},
-		{'i', print_number},
-        {'b', binary},
-	};
+	int (*f)(va_list);
 
-	if (format == NULL || (format[0] == '%' && format[1] == 0))
+	if (format == NULL)
 		return (-1);
 	va_start(valist, format);
-	while (format != NULL && format[i])
+	while (format[i])
 	{
-		if (format[i] != '%')
-			len += _putchar(format[i]);
-		else
+		for (; format[i] != '%' && format[i]; i++)
 		{
-			i++;
-			if (format[i] == '%')
-				len += _putchar('%');
-			j = 0;
-			count = 0;
-			while (j < 13)
-			{
-				if (format[i] == difftypes[j].t)
-				{
-					len += difftypes[j].f(valist);
-					count = 1;
-					break;
-				}
-				j++;
-			}
-			if (!count && format[i] != '%')
-			{
-				len++;
-				len++;
-				_putchar('%');
-				_putchar(format[i]);
-			}
+			_putchar(format[i]);
+			count++;
 		}
-		i++;
+		if (!format[i])
+			return (count);
+		f = check_for_specifiers(&format[i + 1]);
+		if (f != NULL)
+		{
+			count += f(valist);
+			i += 2;
+			continue;
+		}
+		if (!format[i + 1])
+			return (-1);
+		_putchar(format[i]);
+		count++;
+		if (format[i + 1] == '%')
+			i += 2;
+		else
+			i++;
 	}
 	va_end(valist);
-	return (len);
+	return (count);
 }
-
