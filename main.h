@@ -22,5 +22,6 @@ typedef struct types_arguments
 int _putchar(char c);
 int _printf(const char *format, ...);
 int print_number(va_list va);
+int t_char(va_list va)
 
 #endif
