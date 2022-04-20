@@ -1,6 +1,0 @@
-#ifndef _MAIN_H_
-#def _MAIN_H_
-
-void int_printf( const char *format, ...);
-
-#endif
