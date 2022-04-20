@@ -56,10 +56,7 @@ typedef struct print
 
 int _putchar(char c);
 int _printf(const char *format, ...);
-<<<<<<< HEAD
-=======
 int print_c(va_list c);
->>>>>>> 090397222a1dcbcb436a5b0c48680e25c22561c8
 int print_s(va_list s);
 int print_i(va_list i);
 int print_d(va_list d);
